@@ -1,0 +1,1 @@
+String OPENAIAPIKEY = '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';
