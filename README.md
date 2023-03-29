@@ -1,4 +1,4 @@
-# pintu
+# pintoo - A Voice Assistant app
 
 A new Flutter project.
 
