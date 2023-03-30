@@ -15,8 +15,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  SpeechToText speechToText = SpeechToText();
-  FlutterTts flutterTts = FlutterTts();
+  final speechToText = SpeechToText();
+  final flutterTts = FlutterTts();
   String? chatgptcontent;
   String? dallEcontent;
   String lastWords = '';
@@ -29,6 +29,12 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     initSpeechToText();
+    initTextToSpeech();
+  }
+
+  Future<void> initTextToSpeech() async {
+    await flutterTts.setSharedInstance(true);
+    setState(() {});
   }
 
   Future<void> initSpeechToText() async {
@@ -46,8 +52,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  /// This is the callback that the SpeechToText plugin calls when
-  /// the platform returns recognized words.
   void onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       lastWords = result.recognizedWords;
@@ -63,7 +67,7 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement dispose
     super.dispose();
     speechToText.stop();
-    // flutterTts.stop();
+    flutterTts.stop();
   }
 
   @override
@@ -106,6 +110,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 20,
             ),
+
+            //chat bubble
             FadeInLeft(
               child: Visibility(
                 visible: dallEcontent == null,
@@ -215,19 +221,61 @@ class _HomePageState extends State<HomePage> {
               },
               icon: Icon(Icons.print_rounded),
             ),
+            Container(),
           ],
         ),
       ),
+      // bottomNavigationBar: Container(
+      //   color: Colors.red,
+      //   height: 60,
+      //   child:
+      //       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      //     // TextField(
+      //     //   decoration: InputDecoration(border: OutlineInputBorder()),
+      //     // ),
+      //     Container(
+      //       height: 50,
+      //       width: 100,
+      //       color: Colors.blue,
+      //     ),
+      //     InkWell(
+      //       onTap: () async {
+      //         final speech =
+      //             await openAIServices.checkImageOrNot('Generate image of cat');
+      //         if (speech.contains('http')) {
+      //           dallEcontent = speech;
+      //           chatgptcontent = null;
+      //           setState(() {});
+      //         } else {
+      //           chatgptcontent = speech;
+      //           dallEcontent = null;
+      //           setState(() {});
+      //           await systemSpeak(speech);
+      //         }
+      //       },
+      //       child: Container(
+      //         height: 50,
+      //         width: 100,
+      //         color: Colors.yellow,
+      //       ),
+      //     )
+      //   ]),
+      //   // width: 100,
+      // ),
       floatingActionButton: ZoomIn(
         child: FloatingActionButton(
           onPressed: () async {
+            await systemSpeak("");
+            // setState(() async {
+
+            // });
             print('mic pressed');
             if (await speechToText.hasPermission &&
                 speechToText.isNotListening) {
               await startListening();
             } else if (speechToText.isListening) {
               final speech = await openAIServices.checkImageOrNot(lastWords);
-              if (speech.contains('http')) {
+              if (speech.contains('https')) {
                 dallEcontent = speech;
                 chatgptcontent = null;
                 setState(() {});

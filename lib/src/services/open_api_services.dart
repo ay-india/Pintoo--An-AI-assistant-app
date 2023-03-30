@@ -12,22 +12,22 @@ class AIServices {
     try {
       final res = await http.post(
         Uri.parse(
-          'https://api.openai.com/v1/chat/completions',
+          'https://api.openai.com/v1/chat/completions'
         ),
         headers: {
-          'Content-Type': 'applicaton/json',
-          'Authorization': 'Bearer $OPENAIAPIKEY'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $openAIApiKey',
         },
         body: jsonEncode(
           {
-            'model': 'gpt-3.5-turbo',
+            "model": "gpt-3.5-turbo",
             "messages": [
-              {
-                'role': 'user',
-                'content':
-                    'Does this message want to generate an AI picture, image, art or anything similar? $prompt . Simply answer with a yes or no.',
-              }
-            ],
+            {
+              'role': 'user',
+              'content':
+                  'Does this message want to generate an AI picture, image, art or anything similar? $prompt . Simply answer with a yes or no.',
+            }
+          ],
           },
         ),
       );
@@ -43,12 +43,10 @@ class AIServices {
           case 'yes':
           case 'Yes.':
           case 'yes.':
-            final res = await dallEAI(prompt);
-            debugPrint('checkImageornot called res : $res');
+            final res = await dallE(prompt);
             return res;
           default:
             final res = await chatGPT(prompt);
-            debugPrint('checkImageornot called res : $res');
             return res;
         }
       }
@@ -59,7 +57,7 @@ class AIServices {
     }
   }
 
-  Future<String> chatGPT(String prompt) async {
+    Future<String> chatGPT(String prompt) async {
     messages.add({
       'role': 'user',
       'content': prompt,
@@ -69,7 +67,7 @@ class AIServices {
         Uri.parse('https://api.openai.com/v1/chat/completions'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $OPENAIAPIKEY',
+          'Authorization': 'Bearer $openAIApiKey',
         },
         body: jsonEncode({
           "model": "gpt-3.5-turbo",
@@ -94,7 +92,7 @@ class AIServices {
     }
   }
 
-  Future<String> dallEAI(String prompt) async {
+    Future<String> dallE(String prompt) async {
     messages.add({
       'role': 'user',
       'content': prompt,
@@ -104,7 +102,7 @@ class AIServices {
         Uri.parse('https://api.openai.com/v1/images/generations'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $OPENAIAPIKEY',
+          'Authorization': 'Bearer $openAIApiKey',
         },
         body: jsonEncode({
           'prompt': prompt,
