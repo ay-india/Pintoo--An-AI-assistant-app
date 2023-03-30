@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pintu/src/utils/secrets.dart';
 
@@ -7,6 +8,7 @@ class AIServices {
   final List<Map<String, String>> messages = [];
 
   Future<String> checkImageOrNot(String prompt) async {
+    debugPrint('checkImageornot called');
     try {
       final res = await http.post(
         Uri.parse(
@@ -42,9 +44,11 @@ class AIServices {
           case 'Yes.':
           case 'yes.':
             final res = await dallEAI(prompt);
+            debugPrint('checkImageornot called res : $res');
             return res;
           default:
             final res = await chatGPT(prompt);
+            debugPrint('checkImageornot called res : $res');
             return res;
         }
       }

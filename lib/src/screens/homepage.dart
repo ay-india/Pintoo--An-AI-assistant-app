@@ -1,4 +1,6 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:pintu/src/services/open_api_services.dart';
 import 'package:pintu/src/utils/pallete.dart';
 import 'package:pintu/src/widgets/hint.dart';
@@ -14,6 +16,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   SpeechToText speechToText = SpeechToText();
+  FlutterTts flutterTts = FlutterTts();
+  String? chatgptcontent;
+  String? dallEcontent;
   String lastWords = '';
   // String speech = '';
 
@@ -49,99 +54,159 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> systemSpeak(String content) async {
+    await flutterTts.speak(content);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    speechToText.stop();
+    // flutterTts.stop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Pintoo',
-          textAlign: TextAlign.center,
+        centerTitle: true,
+        title: BounceInDown(
+          child: const Text(
+            'Pintoo',
+            textAlign: TextAlign.center,
+          ),
         ),
         leading: const Icon(Icons.menu),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Stack(
-              children: [
-                Container(
-                  height: 100,
-                  decoration: const BoxDecoration(
-                    color: Pallete.assistantCircleColor,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                Container(
-                  height: 120,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/virtualAssistant.png'),
+            ZoomIn(
+              child: Stack(
+                children: [
+                  Container(
+                    height: 100,
+                    decoration: const BoxDecoration(
+                      color: Pallete.assistantCircleColor,
+                      shape: BoxShape.circle,
                     ),
                   ),
-                ),
-              ],
+                  Container(
+                    height: 120,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/virtualAssistant.png'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(
               height: 20,
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 10,
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              decoration: BoxDecoration(
-                border: Border.all(),
-                borderRadius: BorderRadius.circular(20).copyWith(
-                  topLeft: const Radius.circular(0.0),
-                ),
-              ),
-              child: const Text(
-                'Good morning, what task can I do for you?',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 27,
+            FadeInLeft(
+              child: Visibility(
+                visible: dallEcontent == null,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(20).copyWith(
+                      topLeft: const Radius.circular(0.0),
+                    ),
+                  ),
+                  child: chatgptcontent == null
+                      ? const Text(
+                          'Good morning, what task can I do for you?',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 27,
+                          ),
+                        )
+                      : Text(
+                          chatgptcontent!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
                 ),
               ),
             ),
             const SizedBox(
               height: 30,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                Hint(
-                    hintColor: Pallete.firstSuggestionBoxColor,
-                    hintText: 'When is the world cup?'),
-                Hint(
-                    hintColor: Pallete.secondSuggestionBoxColor,
-                    hintText: 'Who is Allu Arjun?')
-              ],
-            ),
-            // SizedBox(
-            //   height: 15,
-            // ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                Hint(
-                    hintColor: Color.fromARGB(255, 167, 181, 242),
-                    hintText: 'How are you?'),
-                Hint(
-                    hintColor: Pallete.firstSuggestionBoxColor,
-                    hintText: 'Who is Narendra Modi?')
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                Hint(
-                    hintColor: Color.fromARGB(255, 167, 181, 242),
-                    hintText: 'What is periods?'),
-                // Hint(
-                //     hintColor: Pallete.firstSuggestionBoxColor,
-                //     hintText: 'Who is Narendra Modi?')
-              ],
+            if (dallEcontent != null)
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(dallEcontent!)),
+              ),
+            Visibility(
+              visible: chatgptcontent == null && dallEcontent == null,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SlideInLeft(
+                        delay: const Duration(milliseconds: 200),
+                        child: const Hint(
+                            hintColor: Pallete.firstSuggestionBoxColor,
+                            hintText: 'When is the world cup?'),
+                      ),
+                      SlideInRight(
+                        delay: const Duration(milliseconds: 200),
+                        child: const Hint(
+                            hintColor: Pallete.secondSuggestionBoxColor,
+                            hintText: 'Who is Allu Arjun?'),
+                      )
+                    ],
+                  ),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SlideInLeft(
+                        delay: const Duration(milliseconds: 300),
+                        child: const Hint(
+                            hintColor: Color.fromARGB(255, 167, 181, 242),
+                            hintText: 'How are you?'),
+                      ),
+                      SlideInRight(
+                        delay: const Duration(milliseconds: 300),
+                        child: const Hint(
+                            hintColor: Pallete.firstSuggestionBoxColor,
+                            hintText: 'Who is Narendra Modi?'),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SlideInLeft(
+                        delay: const Duration(milliseconds: 400),
+                        child: const Hint(
+                            hintColor: Color.fromARGB(255, 167, 181, 242),
+                            hintText: 'What is periods?'),
+                      ),
+                      // Hint(
+                      //     hintColor: Pallete.firstSuggestionBoxColor,
+                      //     hintText: 'Who is Narendra Modi?')
+                    ],
+                  ),
+                ],
+              ),
             ),
             IconButton(
               onPressed: () {
@@ -153,19 +218,36 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          if (await speechToText.hasPermission && speechToText.isNotListening) {
-            await startListening();
-          } else if (speechToText.isListening) {
-            final speech = await openAIServices.checkImageOrNot(lastWords);
-            print(speech);
-            await stopListening();
-          } else {
-            initSpeechToText();
-          }
-        },
-        child: const Icon(Icons.mic),
+      floatingActionButton: ZoomIn(
+        child: FloatingActionButton(
+          onPressed: () async {
+            print('mic pressed');
+            if (await speechToText.hasPermission &&
+                speechToText.isNotListening) {
+              await startListening();
+            } else if (speechToText.isListening) {
+              final speech = await openAIServices.checkImageOrNot(lastWords);
+              if (speech.contains('http')) {
+                dallEcontent = speech;
+                chatgptcontent = null;
+                setState(() {});
+              } else {
+                chatgptcontent = speech;
+                dallEcontent = null;
+                setState(() {});
+                await systemSpeak(speech);
+              }
+
+              await stopListening();
+              // print('speech: ' + speech);
+            } else {
+              initSpeechToText();
+            }
+          },
+          child: speechToText.isListening
+              ? const Icon(Icons.stop)
+              : const Icon(Icons.mic),
+        ),
       ),
     );
   }
