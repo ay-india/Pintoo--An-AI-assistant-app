@@ -56,10 +56,12 @@ class AIServices {
   }
 
   Future<String> chatGPT(String prompt) async {
-    messages.add({
-      'role': 'user',
-      'content': prompt,
-    });
+    messages.add(
+      {
+        'role': 'user',
+        'content': prompt,
+      },
+    );
     try {
       final res = await http.post(
         Uri.parse('https://api.openai.com/v1/chat/completions'),

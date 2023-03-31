@@ -273,8 +273,9 @@ class _HomePageState extends State<HomePage> {
                                   });
                                   systemSpeak('');
                                   print(searchController.text.toString());
-                                  final speech = await openAIServices.chatGPT(
-                                      searchController.text.toString());
+                                  final speech =
+                                      await openAIServices.checkImageOrNot(
+                                          searchController.text.toString());
 
                                   if (speech.contains('http')) {
                                     dallEcontent = speech;
@@ -291,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                                     await systemSpeak(speech);
                                   }
                                 },
-                                child: Icon(Icons.search)),
+                                child: Icon(Icons.send_sharp)),
                             filled: true,
                             fillColor: Pallete.assistantCircleColor,
                             border: OutlineInputBorder(
@@ -316,7 +317,7 @@ class _HomePageState extends State<HomePage> {
                             await startListening();
                           } else if (speechToText.isListening) {
                             final speech =
-                                await openAIServices.chatGPT(lastWords);
+                                await openAIServices.checkImageOrNot(lastWords);
                             if (speech.contains('https')) {
                               dallEcontent = speech;
                               chatgptcontent = null;
@@ -347,6 +348,9 @@ class _HomePageState extends State<HomePage> {
                         child: Container(
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 2,
+                                  color: Color.fromARGB(255, 93, 20, 161)),
                               borderRadius: BorderRadius.circular(
                                 14,
                               ),
