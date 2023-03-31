@@ -11,9 +11,7 @@ class AIServices {
     debugPrint('checkImageornot called');
     try {
       final res = await http.post(
-        Uri.parse(
-          'https://api.openai.com/v1/chat/completions'
-        ),
+        Uri.parse('https://api.openai.com/v1/chat/completions'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $openAIApiKey',
@@ -22,12 +20,12 @@ class AIServices {
           {
             "model": "gpt-3.5-turbo",
             "messages": [
-            {
-              'role': 'user',
-              'content':
-                  'Does this message want to generate an AI picture, image, art or anything similar? $prompt . Simply answer with a yes or no.',
-            }
-          ],
+              {
+                'role': 'user',
+                'content':
+                    'Does this message want to generate an AI picture, image, art or anything similar? $prompt . Simply answer with a yes or no.',
+              }
+            ],
           },
         ),
       );
@@ -57,7 +55,7 @@ class AIServices {
     }
   }
 
-    Future<String> chatGPT(String prompt) async {
+  Future<String> chatGPT(String prompt) async {
     messages.add({
       'role': 'user',
       'content': prompt,
@@ -92,7 +90,7 @@ class AIServices {
     }
   }
 
-    Future<String> dallE(String prompt) async {
+  Future<String> dallE(String prompt) async {
     messages.add({
       'role': 'user',
       'content': prompt,
