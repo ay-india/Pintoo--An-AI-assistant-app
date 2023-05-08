@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
                       child: loading
                           ? const Center(
                               child: CircularProgressIndicator(
-                              color: Pallete.assistantCircleColor,
+                              color: Color.fromARGB(255, 68, 215, 241),
                             ))
                           : Container(
                               padding: const EdgeInsets.symmetric(
@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                     loading
                         ? const Center(
                             child: CircularProgressIndicator(
-                              color: Pallete.assistantCircleColor,
+                              color: Color.fromARGB(255, 68, 215, 241),
                             ),
                           )
                         : Padding(
